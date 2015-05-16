@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Globalization;
 
 namespace SonarQube.Common
 {
@@ -14,8 +15,6 @@ namespace SonarQube.Common
     /// </summary>
     public class ConsoleLogger : ILogger
     {
-        public const string WarningPrefix = "WARNING: ";
-
         #region Public methods
 
         public ConsoleLogger() : this(includeTimestamp: false)
@@ -44,8 +43,8 @@ namespace SonarQube.Common
 
         public void LogWarning(string message, params object[] args)
         {
-            string finalMessage = this.GetFormattedMessage(WarningPrefix + message, args);
-            Console.Error.WriteLine(finalMessage);
+            string finalMessage = this.GetFormattedMessage(Resources.Logger_WarningPrefix + message, args);
+            Console.WriteLine(finalMessage);
         }
 
         public void LogError(string message, params object[] args)
@@ -63,12 +62,12 @@ namespace SonarQube.Common
             string finalMessage = message;
             if (args != null && args.Length > 0)
             {
-                finalMessage = string.Format(System.Globalization.CultureInfo.CurrentCulture, finalMessage ?? string.Empty, args);
+                finalMessage = string.Format(CultureInfo.CurrentCulture, finalMessage ?? string.Empty, args);
             }
 
             if (this.IncludeTimestamp)
             {
-                finalMessage = string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0}: {1}", System.DateTime.Now.ToString("hh:mm:ss"), finalMessage);
+                finalMessage = string.Format(CultureInfo.CurrentCulture, "{0}  {1}", System.DateTime.Now.ToString("T", CultureInfo.CurrentCulture), finalMessage);
             }
             return finalMessage;
         }
